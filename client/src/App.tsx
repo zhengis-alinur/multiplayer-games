@@ -1,17 +1,36 @@
-import { useEffect } from "react";
 import "./App.css";
-import socket from "./socket";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Main from "./pages/Main";
+import GameChoose from "./pages/GameChoose";
+import TicTacToe from "./pages/Tictactoe/TicTacToe";
+import RoomConnector from "./components/RoomConnector";
+import TypeRace from "./pages/TypeRace/TypeRace";
+
+const router = createBrowserRouter([
+	{
+		path: "/",
+		element: <Main />
+	},
+	{
+		path: "tictactoe",
+		element: <TicTacToe />
+	},
+	{
+		path: "typerace",
+		element: <TypeRace />
+	},
+	{
+		path: "gamechoose",
+		element: <GameChoose />
+	},
+	{
+		path: "roomconnector",
+		element: <RoomConnector />
+	}
+]);
 
 function App() {
-	useEffect(() => {
-		socket.emit("handshake", "somedata");
-	}, []);
-
-	return (
-		<div>
-			<h1 className="text-3xl font-bold underline">Hello world!</h1>
-		</div>
-	);
+	return <RouterProvider router={router} />;
 }
 
 export default App;
