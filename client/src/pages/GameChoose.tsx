@@ -1,5 +1,6 @@
 import { TypeAnimation } from "react-type-animation";
 import GameCard from "../components/GameCard";
+import { TICTACTOE, TYPERACE } from "../constants";
 
 const GameChoose = () => {
 	return (
@@ -22,11 +23,11 @@ const GameChoose = () => {
 					style={{ fontSize: "3rem", display: "inline-block" }}
 				/>
 				<div className="flex justify-between items-center w-full  max-w-3xl">
-					<GameCard className="bg-cyan-700" link="/tictactoe">
+					<GameCard className="bg-cyan-700" game={TICTACTOE}>
 						<h2 className="text-6xl">TicTacToe</h2>
 					</GameCard>
 					<h2 className="text-6xl">or</h2>
-					<GameCard className="bg-rose-700" link="/typerace">
+					<GameCard className="bg-rose-700" game={TYPERACE}>
 						<h2 className="text-6xl">Type Race</h2>
 					</GameCard>
 				</div>

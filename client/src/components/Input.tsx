@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 const Input = ({
-	onChange,
 	onlyLetters,
 	...props
 }: { onlyLetters?: boolean } & React.DetailedHTMLProps<
@@ -22,19 +21,14 @@ const Input = ({
 
 		if (regexPattern.test(targetValue)) {
 			setvalue(targetValue);
-			if (onChange) {
-				onChange(event);
-			}
 		}
 	};
 
 	return (
 		<input
 			{...props}
-			value={value}
 			className={`bg-transparent border-4 border-white px-2 py-1 text-3xl max-h-12 ${props.className}`}
 			type="text"
-			onChange={onInputChange}
 		/>
 	);
 };

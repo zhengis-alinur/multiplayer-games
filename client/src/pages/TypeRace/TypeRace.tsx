@@ -3,7 +3,7 @@ import GameBoard from "../Tictactoe/components/GameBoard";
 
 const TypeRace = () => {
 	return (
-		<Page title="Type Race">
+		<Page title="Type Race" subtitle="you know the rules">
 			<div className="content">
 				<GameBoard />
 			</div>
