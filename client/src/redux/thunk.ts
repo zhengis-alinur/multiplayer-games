@@ -1,10 +1,11 @@
-import { Game } from "../types";
+import { Game, User } from "../types";
 import { setGame, setRoomId, setUser } from "./reducer";
 import { AppDispatch } from "./store";
 
-export const setUserThunk = (dispatch: AppDispatch, { userName }: { userName: string }) => {
-	sessionStorage.setItem('user', userName);
-	dispatch(setUser(userName));
+export const setUserThunk = (dispatch: AppDispatch, user: User) => {
+	sessionStorage.setItem('userName', user.userName || '');
+	sessionStorage.setItem('userId', user.userId || '');
+	dispatch(setUser(user));
 }
 
 export const setRoomIdThunk = (dispatch: AppDispatch, { roomId }: { roomId: string }) => {

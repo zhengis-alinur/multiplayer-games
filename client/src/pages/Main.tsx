@@ -9,17 +9,19 @@ import { useAppDispatch } from "../redux/store";
 import { setUserThunk } from "../redux/thunk";
 import { useAppSelector } from "../redux/hooks";
 import { selectRoomId, selectUser } from "../redux/selectors";
+import { User } from "../types";
 
 const Main = () => {
 	const user = useAppSelector(selectUser);
 	const roomId = useAppSelector(selectRoomId);
-	const [userName, setUserName] = useState(user);
+	const [userName, setUserName] = useState<string>(user.userName || "");
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		function loginSuccess(userName: string) {
-			setUserThunk(dispatch, { userName });
+		function loginSuccess(user: User) {
+			console.log(user);
+			setUserThunk(dispatch, user);
 			navigate("gamechoose");
 		}
 		socket.on("loginSuccess", loginSuccess);

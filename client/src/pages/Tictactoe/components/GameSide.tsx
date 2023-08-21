@@ -1,8 +1,8 @@
 import React from "react";
 import { GameSide } from "../../../types";
 import { XSide } from "../../../constants";
-import X from "./X";
-import Circle from "./Circle";
+import X from "./Symbols/X";
+import Circle from "./Symbols/Circle";
 
 const GameSide = ({
 	title,

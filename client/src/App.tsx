@@ -8,14 +8,11 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { useEffect } from "react";
 import Modal from "./components/Modal";
 import { useAppSelector } from "./redux/hooks";
-import { selectModal, selectRoomId, selectUser } from "./redux/selectors";
-import socket from "./socket";
-import { setRoomId } from "./redux/reducer";
+import { selectModal, selectRoomId } from "./redux/selectors";
 import RoomConnector from "./pages/RoomConnector";
 
 function App() {
 	const modal = useAppSelector(selectModal);
-	const roomId = useAppSelector(selectRoomId);
 
 	const router = createBrowserRouter([
 		{

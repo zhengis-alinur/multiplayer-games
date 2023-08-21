@@ -1,17 +1,28 @@
 import { useState } from "react";
-import Circle from "./Circle";
-import X from "./X";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectGameData, selectUserId } from "../../../redux/selectors";
+import { GameData, TictactoeGameData } from "../../../types";
+import Circle from "./Symbols/Circle";
+import Empty from "./Symbols/Empty";
+import X from "./Symbols/X";
 
 const GameBoard = ({ ...props }: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>) => {
-	const gameSide = "O";
-	const [board, setBoard] = useState<Array<Array<string>>>(Array(3).fill(Array(3).fill("O")));
+	const gameData = useAppSelector(selectGameData) as GameData;
+	const userId = useAppSelector(selectUserId);
+	const userGameData = gameData[userId] as TictactoeGameData;
+	const gameSide = userGameData?.gameSide;
 
-	const onCellClick = (row: number, col: number) => {};
+	const [board, setBoard] = useState<Array<Array<string>>>(Array(3).fill(Array(3).fill("")));
+	const onCellClick = (row: number, col: number) => {
+		const temp = [...board];
+		temp[row][col] = gameSide;
+		setBoard(temp);
+	};
 
 	return (
 		<div className={`flex flex-col ${props.className}`}>
 			{board.map((row, rowIndex) => (
-				<div className="flex">
+				<div className="flex" key={rowIndex}>
 					{row.map((cell, colIndex) => {
 						let border = "";
 						if (rowIndex === 0) border = "border-b-8";
@@ -22,11 +33,12 @@ const GameBoard = ({ ...props }: React.DetailedHTMLProps<React.HTMLAttributes<HT
 							<div
 								key={`${rowIndex}${colIndex}`}
 								onClick={(event) => {
+									event.stopPropagation();
 									onCellClick(rowIndex, colIndex);
 								}}
 								className={`${border} w-150 h-150 flex justify-center items-center text-9xl`}
 							>
-								{rowIndex % 2 === 0 ? <X /> : <Circle />}
+								{board[rowIndex][colIndex] && board[rowIndex][colIndex] === "X" ? <X /> : <Circle />}
 							</div>
 						);
 					})}

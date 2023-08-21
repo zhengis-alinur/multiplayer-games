@@ -36,8 +36,9 @@ const GameChat = ({ ...props }: React.DetailedHTMLProps<React.HTMLAttributes<HTM
 	return (
 		<div className={`flex flex-col justify-between bg-white/10 ${props.className}`} style={{ maxHeight: "400px" }}>
 			<div className="flex flex-col messages p-5 overflow-y-auto">
-				{messages.map((message) => (
+				{messages.map((message, index) => (
 					<div
+						key={index}
 						className={`message text-black bg-cyan-200 p-2 m-3 w-fit ${
 							message.userId === userId && "self-end bg-amber-400"
 						}`}

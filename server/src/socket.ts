@@ -4,6 +4,9 @@ import app from './app';
 import path from 'path';
 import dotenv from 'dotenv';
 import { Socket } from 'socket.io';
+import { Rooms } from './types';
+import { TICTACTOE } from './constants';
+import { setRandomTicTacToe } from './utils';
 dotenv.config({ path: path.join(__dirname, '../', '.env') });
 
 const server = http.createServer(app);
@@ -17,44 +20,57 @@ const io = require('socket.io')(server, {
 
 const users: Map<string, string> = new Map();
 const MAX_USERS_PER_ROOM = 2;
-const rooms: { [key: string]: Map<string, string[]> } = { tictactoe: new Map(), typerace: new Map() };
+
+const rooms: Rooms = {
+	tictactoe: new Map(),
+	typerace: new Map()
+};
 
 io.on('connection', async (socket: Socket) => {
 	console.log('A user connected');
 	socket.on('login', ({ userName, roomId }: { userName: string; roomId: string }) => {
 		users.set(socket.id, userName);
-		socket.emit('loginSuccess', userName);
+		console.log(userName);
+		socket.emit('loginSuccess', { userName, userId: socket.id });
 		if (!rooms.tictactoe.get(roomId) && !rooms.typerace.get(roomId)) {
-			socket.emit('roomLoginFailed', userName);
+			socket.emit('roomLoginFailed');
 		}
 	});
 	socket.on('createRoom', ({ game }: { game: string }) => {
 		const roomId = socket.id;
 		if (!rooms[game].has(roomId)) {
-			rooms[game].set(roomId, [roomId]);
+			const room = { users: [roomId], gameData: new Map().set(socket.id, []) };
+			rooms[game].set(roomId, room);
 			socket.join(roomId);
 			socket.emit('createRoomSuccess', roomId);
+			socket.emit('joinSuccess', { roomId, gameData: room.gameData });
 		} else {
 			socket.emit('createRoomFailed');
 		}
 	});
 	socket.on('joinRoom', ({ roomId, game }) => {
-		console.log(game);
 		const room = rooms[game].get(roomId);
 		if (!room) {
-			// Create a new room if it doesn't exist
-			rooms[game].set(roomId, [socket.id]);
-			socket.join(roomId);
 			socket.emit('joinFailed');
-		} else if (room.length < MAX_USERS_PER_ROOM) {
-			// Add the user to the existing room if there's space
-			room.push(socket.id);
+		} else if (room.users.length < MAX_USERS_PER_ROOM) {
+			room.users.push(socket.id);
+
 			rooms[game].set(roomId, room);
+
 			socket.join(roomId);
-			socket.emit('joinSuccess', roomId);
+			socket.emit('joinSuccess', { roomId, gameData: room.gameData });
 		} else {
-			// The room is full, notify the user
 			socket.emit('joinFailed');
+		}
+	});
+
+	socket.on('tictactoeInit', ({ roomId }: { roomId: string }) => {
+		const room = rooms[TICTACTOE].get(roomId);
+		if (room?.users.length === 2) {
+			setRandomTicTacToe(room);
+			const gameData = JSON.stringify(Object.fromEntries(room?.gameData));
+			socket.emit('tictactoeInitSuccess', { gameData });
+			socket.to(roomId).emit('tictactoeInitSuccess', { gameData });
 		}
 	});
 

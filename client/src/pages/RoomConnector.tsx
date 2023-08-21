@@ -9,6 +9,7 @@ import { showModal } from "../redux/reducer";
 import { setRoomIdThunk } from "../redux/thunk";
 import { useAppSelector } from "../redux/hooks";
 import { selectGame, selectRoomId } from "../redux/selectors";
+import { GameData } from "../types";
 
 const RoomConnector = ({ ...props }: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>) => {
 	const [roomIdInput, setRoomIdInput] = useState<string>("");
@@ -18,7 +19,7 @@ const RoomConnector = ({ ...props }: React.DetailedHTMLProps<React.HTMLAttribute
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		function onJoinSuccess(roomId: string) {
+		function onJoinSuccess({ roomId }: { roomId: string }) {
 			dispatch(showModal(`You joined a room. ID: ${roomId}.`));
 			setRoomIdThunk(dispatch, { roomId });
 			navigate(`/${game}`);
@@ -47,7 +48,7 @@ const RoomConnector = ({ ...props }: React.DetailedHTMLProps<React.HTMLAttribute
 	};
 	const onJoinRoom = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		socket.emit("joinRoom", { roomIdInput, game });
+		socket.emit("joinRoom", { roomId: roomIdInput, game });
 	};
 
 	const onRoomIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {

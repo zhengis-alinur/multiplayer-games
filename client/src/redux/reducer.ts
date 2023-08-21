@@ -1,29 +1,39 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Modal } from "../types";
+import { GameData, Modal, User } from "../types";
 
 type SliceState = {
-	user: string | null,
+	user: User,
 	roomId: string | null,
 	game: string | null,
-	modal: Modal
+	modal: Modal,
+	gameData: GameData | null
 }
 
 const initialState: SliceState = {
-	user: sessionStorage.getItem('user'),
+	user: {
+		userName: sessionStorage.getItem('userName'),
+		userId: sessionStorage.getItem('userId')
+	},
 	roomId: sessionStorage.getItem('roomId'),
 	game: sessionStorage.getItem('game'),
 	modal: {
 		isOpen: false,
 		message: 'Everything is ok',
 	},
+	gameData: {
+		[sessionStorage.getItem('userId') || '']: {
+			gameSide: 'X',
+			moves: []
+		}
+	}
 }
 
 const slice = createSlice({
 	name: 'test',
 	initialState,
 	reducers: {
-		setUser: (state, action: PayloadAction<string>) => {
-			state.user = action.payload;
+		setUser: (state, action: PayloadAction<Partial<User>>) => {
+			state.user = { ...state.user, ...action.payload };
 		},
 		setGame: (state, action: PayloadAction<string>) => {
 			state.game = action.payload;
@@ -43,10 +53,13 @@ const slice = createSlice({
 				message: ''
 			};
 		},
+		setGameData: (state, action: PayloadAction<GameData>) => {
+			state.gameData = action.payload;
+		},
 	},
 })
 
-export const { setUser, setGame, setRoomId, showModal, hideModal } = slice.actions;
+export const { setUser, setGame, setRoomId, showModal, hideModal, setGameData } = slice.actions;
 
 export default slice.reducer;
 
